@@ -1,0 +1,9 @@
+[package]
+name = "audio_engine"
+version = "0.1.0"
+authors = ["Anton Aderum <antonaderum@gmail.com>"]
+
+[dependencies.sdl2]
+version = "0.30"
+default-features = false
+features = ["ttf","image","mixer"]
