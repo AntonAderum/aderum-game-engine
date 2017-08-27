@@ -29,6 +29,7 @@ pub fn main() {
     let mut game_manager_obj = game_manager::GameManager::init();
     let mut event_pump = sdl_context.event_pump().unwrap();
     let mut keyboard_state : HashMap<Keycode,bool> = HashMap::new();
+    let mut coll_info: HashMap<String,game_engine::GameEngine::game_engine::CollInfoType> = HashMap::new();
     let mut del: f64 = 0.0;
     let mut old_time = std::time::Instant::now();
     'running: loop {
@@ -38,13 +39,13 @@ pub fn main() {
             break 'running;
         }
         
-        game_manager_obj.update(&del,&keyboard_state);
+        game_manager_obj.update(&del,&keyboard_state,&mut coll_info);
         game_manager_obj.draw(&mut canvas);
         
         let new_time = std::time::Instant::now();
         let nanoseconds = (new_time - old_time).subsec_nanos();
         let ticks_per_second = (1_000_000_000u32/nanoseconds) as f64;
-        del = 10.0/ticks_per_second;/////FAAAAAAIL HERE
+        del = 1.0/ticks_per_second;/////FAAAAAAIL HERE
         //println!("del{}", ticks_per_second);
         old_time = new_time;
         

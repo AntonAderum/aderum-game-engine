@@ -5,6 +5,7 @@ use sdl2::render::Canvas;
 use sdl2::video::Window;
 use std::collections::HashMap;
 use sdl2::keyboard::Keycode;
+use sdl2::pixels::Color;
 use game_engine::GameEngine::game_engine::ObjectUsingPhysics;   
 use game_engine::GameEngine::game_engine::Kinectic;
 use game_engine::GameEngine::game_engine::Pointf;
@@ -38,6 +39,7 @@ pub struct GameObject {
     pub speed: f64,
     pub object_using_physics : ObjectUsingPhysics,
     canjump:bool,
+    pub color: Color,
 }
 
 
@@ -45,14 +47,20 @@ impl GameObjectTrait for GameObject{
     fn update(&mut self, delta_time: &f64, keyboard_input: &HashMap<Keycode,bool>){
 match keyboard_input.get(&Keycode::W){
                     Some(o) => {
-                        if *o && self.canjump {
+                        if *o{
+
+                         if self.canjump {
                             match self.object_using_physics {
                                 ObjectUsingPhysics::Yes(ref mut phys) => {
-                                    phys.add_jump_force(100.0);
+                                    phys.add_jump_force(0.5);
                                     self.canjump = false;
                                 },
                                 _ => {self.canjump = true}
                             }
+                         }
+                        }
+                        else{
+                            self.canjump = true
                         }
                         
                     },
@@ -77,6 +85,7 @@ match keyboard_input.get(&Keycode::W){
 
     }
     fn draw(& self, rend : &mut Canvas<Window>){
+        let _ = rend.set_draw_color(self.color);
         let border_rect = Rect::new(self.position.x as i32-64, self.position.y as i32-64, 128, 128);
         let _ = rend.draw_rect(border_rect);
 
@@ -91,17 +100,17 @@ impl GameObject{
         
         let pos =  Pointf{x: 320.0, y:240.0};
         let size =  Pointf{x: 1.0, y:1.0};
-        let physics = Physics2D{mass: 1.0, use_gravity: true, is_kinectic: Kinectic::No(Pointf{x:0.0, y:0.0}),collision_type: CollisionTypes::BoundingBox(Pointf{x:64.0,y:64.0},Pointf{x:64.0, y:64.0})};
-        let gam = GameObject{position: pos,rotation: 0.0, size: size, speed: 150.0, object_using_physics: ObjectUsingPhysics::Yes(physics), canjump:true};
+        let physics = Physics2D{mass: 1.0, use_gravity: true, is_kinectic: Kinectic::No(Pointf{x:0.0, y:0.0}),collision_type: CollisionTypes::BoundingBox(Pointf{x:64.0,y:64.0},Pointf{x:64.0, y:64.0}),id:String::from("obj1")};
+        let gam = GameObject{position: pos,rotation: 0.0, size: size, speed: 150.0, object_using_physics: ObjectUsingPhysics::Yes(physics), canjump:true, color: Color::RGB(200, 153, 204)};
         //let pl = Player{gameObject: gam};
         return gam;
     }
-     pub fn new_floor() -> GameObject{
+     pub fn new_floor(pos: Pointf) -> GameObject{
         
-        let pos =  Pointf{x: 320.0, y:550.0};
+        //let pos =  Pointf{x: 320.0, y:550.0};
         let size =  Pointf{x: 1.0, y:1.0};
-        let physics = Physics2D{mass: 1.0, use_gravity: false, is_kinectic: Kinectic::_Yes, collision_type: CollisionTypes::BoundingBox(Pointf{x:64.0,y:64.0},Pointf{x:64.0, y:64.0})};
-        let gam = GameObject{position: pos,rotation: 0.0, size: size, speed: 0.0, object_using_physics: ObjectUsingPhysics::Yes(physics), canjump:true};
+        let physics = Physics2D{mass: 1.0, use_gravity: false, is_kinectic: Kinectic::_Yes, collision_type: CollisionTypes::BoundingBox(Pointf{x:64.0,y:64.0},Pointf{x:64.0, y:64.0}), id:String::from("obj2")};
+        let gam = GameObject{position: pos,rotation: 0.0, size: size, speed: 0.0, object_using_physics: ObjectUsingPhysics::Yes(physics), canjump:true,color: Color::RGB(0, 153, 0)};
        // let floor = Floor{game_object: gam};
         return gam;
     }

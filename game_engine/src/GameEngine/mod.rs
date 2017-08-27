@@ -1,5 +1,6 @@
 pub mod game_engine{
-    
+    use std::collections::HashMap;
+    use std::collections::hash_map::Entry::{Occupied, Vacant};
      #[derive(Debug)]
     pub struct Pointf {
         pub x: f64,
@@ -14,8 +15,8 @@ pub mod game_engine{
 
     #[derive(Debug)]
     pub enum CollisionTypes {
-        BoundingBox(Pointf,Pointf),//middle point of rect, and point is distance in both x and y led from middlepoint
-        BoindingCircle(Pointf,f64),// middlepoint of circle, and radius
+        BoundingBox(Pointf,Pointf),//offset, radius x and y -led 
+        BoindingCircle(Pointf,f64),// offset, and radius
         None
     }
 
@@ -24,7 +25,8 @@ pub mod game_engine{
         pub mass: f64,
         pub use_gravity: bool,
         pub is_kinectic: Kinectic,
-        pub collision_type: CollisionTypes
+        pub collision_type: CollisionTypes,
+        pub id: String
     }
 
     pub struct Rectf64{
@@ -46,13 +48,19 @@ pub mod game_engine{
             false
         }
     }
-
+#[derive(Debug, Clone)]
+    pub enum CollInfoType{
+        None,
+        Enter,
+        Stay,
+        Exit
+    }
     impl Physics2D {
 
         pub fn update(&mut self, pos : &mut Pointf, delta_time: &f64){
             if let Kinectic::No(ref mut point) = self.is_kinectic{
-                    point.y  =  point.y + 9.82 * delta_time;
-                    pos.y += point.y*delta_time;
+                    point.y += 0.82 * delta_time;
+                    pos.y += point.y;
             }
             
         }
@@ -62,23 +70,92 @@ pub mod game_engine{
                 point.y -= force;
             }
         }
-        pub fn collision(&mut self, pos: &mut Pointf, other: &mut Physics2D, other_pos: & Pointf) -> bool{
 
+        fn RemoveVelocity(&mut self){
+             if let Kinectic::No(ref mut point) = self.is_kinectic {
+
+                                point.y = 0.0;
+                            }
+        }
+        fn AddNormalForce(&mut self, pos: &mut Pointf, delta_time: &f64){
+            if let Kinectic::No(ref mut point) = self.is_kinectic {
+                                pos.y -= point.y;
+                                point.y -= 0.82 * delta_time;
+                                println!("point.y {}", point.y );
+                            }
+        }
+
+        pub fn collision(&mut self, pos: &mut Pointf, other:&mut Physics2D, other_pos: &mut Pointf, coll_info: &mut HashMap<String,CollInfoType>, delta_time: &f64) -> CollInfoType{
+            let mut col =false;
             if let CollisionTypes::BoundingBox(ref offset, ref size) = self.collision_type{
                 if let CollisionTypes::BoundingBox(ref  other_offset,ref  other_size) = other.collision_type{
                         let first_rect = Rectf64::new(pos, offset, size);
                         let second_rect =Rectf64::new(other_pos, other_offset, other_size);
                         if first_rect.intersects(&second_rect){
-                            if let Kinectic::No(ref mut point) = self.is_kinectic {
-                                pos.y -= point.y;
-                                point.y *= -0.8;
-                            }
-                            return true
+                            col = true;
+                        
                                 
                         }
                 }
             }
-            false
+            let mut val2 = CollInfoType::None;
+            if col {
+             let v = &other.id;
+               let val = match coll_info.entry(v.to_string()) {
+                    Vacant(entry) => {
+                        
+                        val2 = CollInfoType::Enter;
+                        entry.insert(CollInfoType::Enter)
+                        },
+                    Occupied(mut entry) =>{
+                        match entry.get(){
+                            &CollInfoType::Enter | &CollInfoType::Stay => {
+                                val2 = CollInfoType::Stay;
+                                entry.insert(CollInfoType::Stay);
+                            },
+                            
+                            _ => {
+                                val2 = CollInfoType::Enter;
+                                entry.insert(CollInfoType::Enter);
+                            }
+                        }
+                         entry.into_mut()},
+                };
+            }
+            else{
+                let v = &other.id;
+                 let val = match coll_info.entry(v.to_string()) {
+                    Vacant(entry) => entry.insert(CollInfoType::None),
+                    Occupied(mut entry) =>{
+                        match entry.get(){
+                            &CollInfoType::Enter | &CollInfoType::Stay => {
+                                entry.insert(CollInfoType::Exit);
+                                val2 = CollInfoType::Exit;
+                            },
+                            
+                            _ => {
+                                entry.insert(CollInfoType::None);
+                                val2 = CollInfoType::None;
+                            }
+                        }
+                         entry.into_mut()},
+                };
+            }
+            match val2{
+                CollInfoType::Enter =>{
+                    self.RemoveVelocity();
+                    other.RemoveVelocity();
+                    println!("Enter");
+                }
+                CollInfoType::Stay => {
+                    self.AddNormalForce(pos,delta_time);
+                    other.AddNormalForce( other_pos, delta_time);
+                     println!("Stay: ");
+                }
+                _ => ()
+            }
+            val2
+            
         }
         // add code here
     }
