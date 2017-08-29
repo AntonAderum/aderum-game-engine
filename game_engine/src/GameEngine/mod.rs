@@ -71,7 +71,7 @@ pub mod game_engine {
     impl Physics2D {
         pub fn update(&mut self, pos: &mut Pointf, delta_time: &f64) {
             if let Kinectic::No(ref mut point) = self.is_kinectic {
-                point.y += 0.82 * delta_time;
+                point.y += 9.82 * delta_time;
                 pos.y += point.y;
             }
 
@@ -92,7 +92,7 @@ pub mod game_engine {
         fn add_normal_force(&mut self, pos: &mut Pointf, delta_time: &f64) {
             if let Kinectic::No(ref mut point) = self.is_kinectic {
                 pos.y -= point.y;
-                point.y -= 0.82 * delta_time;
+                point.y -= 9.82 * delta_time;
                 println!("point.y {}", point.y);
             }
         }
@@ -176,6 +176,7 @@ pub mod game_engine {
                     other.add_normal_force(other_pos, delta_time);
                     println!("Stay: ");
                 }
+                CollInfoType::Exit => println!("Exit"),
                 _ => (),
             }
             val2

@@ -49,7 +49,7 @@ pub fn main() {
         let new_time = std::time::Instant::now();
         let nanoseconds = (new_time - old_time).subsec_nanos();
         let ticks_per_second = (1_000_000_000u32 / nanoseconds) as f64;
-        del = 1.0 / ticks_per_second; /////FAAAAAAIL HERE
+        del = 0.1 / ticks_per_second; /////FAAAAAAIL HERE
         //println!("del{}", ticks_per_second);
         old_time = new_time;
 

@@ -17,7 +17,7 @@ pub struct Player {
     pub game_object: GameObject,
 }
 impl Player {
-    pub fn new() -> Player {
+    pub fn new(name: String) -> Player {
 
         let pos = Pointf { x: 320.0, y: 240.0 };
         let size = Pointf { x: 1.0, y: 1.0 };
@@ -29,13 +29,13 @@ impl Player {
                 Pointf { x: 64.0, y: 64.0 },
                 Pointf { x: 64.0, y: 64.0 },
             ),
-            id: String::from("obj1"),
+            id: name,
         };
         let gam = GameObject {
             position: pos,
             rotation: 0.0,
             size: size,
-            speed: 150.0,
+            speed: 2550.0,
             object_using_physics: ObjectUsingPhysics::Yes(physics),
             canjump: true,
             color: Color::RGB(200, 153, 204),
@@ -49,14 +49,18 @@ impl GameObjectTrait for Player {
     fn update(&mut self, delta_time: &f64, keyboard_input: &HashMap<Keycode, bool>) {
         match keyboard_input.get(&Keycode::W) {
             Some(o) => {
-                if *o && self.game_object.canjump {
-                    match self.game_object.object_using_physics {
-                        ObjectUsingPhysics::Yes(ref mut phys) => {
-                            phys.add_jump_force(100.0);
-                            self.game_object.canjump = false;
+                if *o {
+                    if self.game_object.canjump {
+                        match self.game_object.object_using_physics {
+                            ObjectUsingPhysics::Yes(ref mut phys) => {
+                                phys.add_jump_force(0.4);
+                                self.game_object.canjump = false;
+                            }
+                            _ => self.game_object.canjump = true,
                         }
-                        _ => self.game_object.canjump = true,
                     }
+                } else {
+                    self.game_object.canjump = true;
                 }
             }
             None => {
