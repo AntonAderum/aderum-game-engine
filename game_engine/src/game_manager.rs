@@ -68,9 +68,9 @@ pub fn send_collision_report(
 
 impl GameManager {
     pub fn init() -> GameManager {
-        let object = Player::new();
-        let object2 = Floor::new(Pointf { x: 320.0, y: 550.0 });
-        let object3 = Floor::new(Pointf { x: 650.0, y: 450.0 });
+        let object = Player::new(String::from("player"));
+        let object2 = Floor::new(Pointf { x: 320.0, y: 550.0 }, String::from("floor1"));
+        let object3 = Floor::new(Pointf { x: 650.0, y: 450.0 }, String::from("floor2"));
         let manager =
             GameManager { obj_vec: vec![Box::new(object), Box::new(object2), Box::new(object3)] };
         return manager;

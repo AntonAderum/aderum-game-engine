@@ -16,7 +16,7 @@ pub struct Floor {
 }
 
 impl Floor {
-    pub fn new(pos: Pointf) -> Floor {
+    pub fn new(pos: Pointf, name: String) -> Floor {
 
         let size = Pointf { x: 1.0, y: 1.0 };
         let physics = Physics2D {
@@ -27,7 +27,7 @@ impl Floor {
                 Pointf { x: 64.0, y: 64.0 },
                 Pointf { x: 64.0, y: 64.0 },
             ),
-            id: String::from("obj2"),
+            id: name,
         };
         let gam = GameObject {
             position: pos,
