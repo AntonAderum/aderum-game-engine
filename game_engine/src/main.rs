@@ -5,7 +5,7 @@ extern crate game_engine;
 mod game_manager;
 //mod game_engine;
 mod game_object;
-
+mod background;
 mod floor;
 mod player;
 
@@ -26,11 +26,12 @@ pub fn main() {
         .unwrap();
 
     let mut canvas = window.into_canvas().build().unwrap();
-
+    let texture_creator = canvas.texture_creator();
     canvas.set_draw_color(Color::RGB(255, 0, 0));
     canvas.clear();
     canvas.present();
-    let mut game_manager_obj = game_manager::GameManager::init();
+    let mut game_manager_obj = game_manager::GameManager::new(&texture_creator);
+    game_manager_obj.init();
     let mut event_pump = sdl_context.event_pump().unwrap();
     let mut keyboard_state: HashMap<Keycode, bool> = HashMap::new();
     let mut coll_info: HashMap<String, game_engine::GameEngine::game_engine::CollInfoType> =

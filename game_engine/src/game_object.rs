@@ -18,7 +18,7 @@ pub trait GameObjectTrait {
     fn collision_exit(&mut self, _other: &GameObject) {}
 
     // fn GetObjectUsingPhysics( self) -> ObjectUsingPhysics;
-    fn get_game_object<'a>(&'a mut self) -> &mut GameObject;
+    fn get_game_object(&mut self) -> &mut GameObject;
 }
 
 impl std::fmt::Debug for GameObjectTrait {

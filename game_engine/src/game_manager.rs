@@ -10,14 +10,16 @@ use game_engine::GameEngine::game_engine::CollInfoType;
 use game_engine::GameEngine::game_engine::Pointf;
 use floor::Floor;
 use player::Player;
+use background::Background;
+use sdl2;
 
-#[derive(Debug)]
-pub struct GameManager {
-    obj_vec: Vec<Box<GameObjectTrait>>,
+pub struct GameManager<'a> {
+    obj_vec: Vec<Box<GameObjectTrait + 'a>>,
+    texture_creator: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>,
 }
-pub fn checko_collision(
-    this: &mut Box<GameObjectTrait>,
-    other: &mut Box<GameObjectTrait>,
+pub fn checko_collision<'a>(
+    this: &mut Box<GameObjectTrait + 'a>,
+    other: &mut Box<GameObjectTrait + 'a>,
     coll_info: &mut HashMap<String, CollInfoType>,
     delta_time: &f64,
 ) -> CollInfoType {
@@ -43,9 +45,9 @@ pub fn checko_collision(
 
 }
 
-pub fn send_collision_report(
-    this: &mut Box<GameObjectTrait>,
-    other: &mut Box<GameObjectTrait>,
+pub fn send_collision_report<'a>(
+    this: &mut Box<GameObjectTrait + 'a>,
+    other: &mut Box<GameObjectTrait + 'a>,
     coll_type: CollInfoType,
 ) {
     match coll_type {
@@ -66,14 +68,32 @@ pub fn send_collision_report(
 }
 
 
-impl GameManager {
-    pub fn init() -> GameManager {
-        let object = Player::new(String::from("player"));
-        let object2 = Floor::new(Pointf { x: 320.0, y: 550.0 }, String::from("floor1"));
-        let object3 = Floor::new(Pointf { x: 650.0, y: 450.0 }, String::from("floor2"));
-        let manager =
-            GameManager { obj_vec: vec![Box::new(object), Box::new(object2), Box::new(object3)] };
-        return manager;
+impl<'a> GameManager<'a> {
+    pub fn new(
+        texture_creator2: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+    ) -> GameManager<'a> {
+        GameManager {
+            obj_vec: Vec::new(),
+            texture_creator: texture_creator2,
+        }
+    }
+    pub fn init(&mut self) {
+        let background = Background::new(Pointf { x: 0.0, y: 0.0 }, &self.texture_creator);
+        let object = Player::new(String::from("player"), &self.texture_creator);
+        let object2 = Floor::new(
+            Pointf { x: 320.0, y: 550.0 },
+            String::from("floor1"),
+            &self.texture_creator,
+        );
+        let object3 = Floor::new(
+            Pointf { x: 600.0, y: 480.0 },
+            String::from("floor2"),
+            &self.texture_creator,
+        );
+        self.obj_vec.push(Box::new(background));
+        self.obj_vec.push(Box::new(object));
+        self.obj_vec.push(Box::new(object2));
+        self.obj_vec.push(Box::new(object3));
     }
 
 
@@ -102,7 +122,7 @@ impl GameManager {
 
     }
 
-    pub fn draw(&self, rend: &mut Canvas<Window>) {
+    pub fn draw(&'a self, rend: &mut Canvas<Window>) {
 
         // Set the drawing color to a light blue.
         let _ = rend.set_draw_color(Color::RGB(101, 208, 246));

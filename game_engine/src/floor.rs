@@ -9,14 +9,21 @@ use game_engine::GameEngine::game_engine::Physics2D;
 use game_engine::GameEngine::game_engine::ObjectUsingPhysics;
 use game_engine::GameEngine::game_engine::Kinectic;
 use game_engine::GameEngine::game_engine::CollisionTypes;
+use sdl2::render::Texture as SdlTexture;
+extern crate sdl2;
+use std::path::Path;
 
-#[derive(Debug)]
-pub struct Floor {
+pub struct Floor<'a> {
     pub game_object: GameObject,
+    pub texture: SdlTexture<'a>,
 }
 
-impl Floor {
-    pub fn new(pos: Pointf, name: String) -> Floor {
+impl<'a> Floor<'a> {
+    pub fn new(
+        pos: Pointf,
+        name: String,
+        texture_creator: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+    ) -> Floor<'a> {
 
         let size = Pointf { x: 1.0, y: 1.0 };
         let physics = Physics2D {
@@ -38,30 +45,44 @@ impl Floor {
             canjump: true,
             color: Color::RGB(0, 153, 0),
         };
-        let floor = Floor { game_object: gam };
+        let temp_surface = sdl2::surface::Surface::load_bmp(Path::new("Assets/floor.bmp")).unwrap();
+        let floor = Floor {
+            game_object: gam,
+            texture: texture_creator
+                .create_texture_from_surface(&temp_surface)
+                .unwrap(),
+        };
         return floor;
     }
 }
 
-impl GameObjectTrait for Floor {
+impl<'a> GameObjectTrait for Floor<'a> {
     fn draw(&self, rend: &mut Canvas<Window>) {
-        // Create centered Rect, draw the outline of the Rect in our dark blue color.
-        let border_rect = Rect::new(
-            self.game_object.position.x as i32 - 64,
-            self.game_object.position.y as i32 - 64,
-            128,
-            128,
-        );
-        let _ = rend.draw_rect(border_rect);
+        // // Create centered Rect, draw the outline of the Rect in our dark blue color.
+        // let border_rect = Rect::new(
+        //     self.game_object.position.x as i32 - 64,
+        //     self.game_object.position.y as i32 - 64,
+        //     128,
+        //     128,
+        // );
+        // let _ = rend.draw_rect(border_rect);
 
-        // Create a smaller centered Rect, filling it in the same dark blue.
+        // // Create a smaller centered Rect, filling it in the same dark blue.
+        // let inner_rect = Rect::new(
+        //     self.game_object.position.x as i32 - 60,
+        //     self.game_object.position.y as i32 - 60,
+        //     128,
+        //     128,
+        // );
+        // let _ = rend.fill_rect(inner_rect);
+
         let inner_rect = Rect::new(
             self.game_object.position.x as i32 - 60,
             self.game_object.position.y as i32 - 60,
             128,
             128,
         );
-        let _ = rend.fill_rect(inner_rect);
+        rend.copy(&self.texture, None, inner_rect);
     }
 
     fn collision_enter(&mut self, _other: &GameObject) {}
@@ -70,7 +91,7 @@ impl GameObjectTrait for Floor {
     // fn GetObjectUsingPhysics(&mut self) -> ObjectUsingPhysics{
     //     self.game_object.object_using_physics
     // }
-    fn get_game_object<'a>(&'a mut self) -> &mut GameObject {
+    fn get_game_object<'c>(&'c mut self) -> &mut GameObject {
         &mut self.game_object
     }
 }

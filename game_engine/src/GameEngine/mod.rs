@@ -190,7 +190,7 @@ pub mod game_engine {
     #[derive(Debug)]
     pub enum ObjectUsingPhysics {
         Yes(Physics2D),
-        _None,
+        None,
     }
 
 

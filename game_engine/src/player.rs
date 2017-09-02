@@ -11,13 +11,21 @@ use game_engine::GameEngine::game_engine::ObjectUsingPhysics;
 use game_engine::GameEngine::game_engine::Kinectic;
 use game_engine::GameEngine::game_engine::CollisionTypes;
 use game_engine::GameEngine::game_engine::Physics2D;
-
-#[derive(Debug)]
-pub struct Player {
+use sdl2::render::Texture as SdlTexture;
+extern crate sdl2;
+use std;
+use std::path::Path;
+//#[derive(Debug)]
+pub struct Player<'a> {
     pub game_object: GameObject,
+    pub texture: SdlTexture<'a>,
+    anim: f64,
 }
-impl Player {
-    pub fn new(name: String) -> Player {
+impl<'a> Player<'a> {
+    pub fn new(
+        name: String,
+        texture_creator: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+    ) -> Player<'a> {
 
         let pos = Pointf { x: 320.0, y: 240.0 };
         let size = Pointf { x: 1.0, y: 1.0 };
@@ -40,13 +48,26 @@ impl Player {
             canjump: true,
             color: Color::RGB(200, 153, 204),
         };
-        let pl = Player { game_object: gam };
-        return pl;
+
+        let temp_surface = sdl2::surface::Surface::load_bmp(Path::new("Assets/hero.bmp")).unwrap();
+        Player {
+            game_object: gam,
+            texture: texture_creator
+                .create_texture_from_surface(&temp_surface)
+                .unwrap(),
+            anim: 0.0,
+        }
+    }
+}
+impl<'a> std::fmt::Debug for Player<'a> {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "Gameobject trait")
     }
 }
 
-impl GameObjectTrait for Player {
+impl<'a> GameObjectTrait for Player<'a> {
     fn update(&mut self, delta_time: &f64, keyboard_input: &HashMap<Keycode, bool>) {
+        self.anim += *delta_time * 100.0;
         match keyboard_input.get(&Keycode::W) {
             Some(o) => {
                 if *o {
@@ -85,30 +106,21 @@ impl GameObjectTrait for Player {
         }
     }
     fn draw(&self, rend: &mut Canvas<Window>) {
-        // Create centered Rect, draw the outline of the Rect in our dark blue color.
-        let border_rect = Rect::new(
-            self.game_object.position.x as i32 - 64,
-            self.game_object.position.y as i32 - 64,
-            128,
-            128,
-        );
-        let _ = rend.draw_rect(border_rect);
-
-        // Create a smaller centered Rect, filling it in the same dark blue.
         let inner_rect = Rect::new(
             self.game_object.position.x as i32 - 60,
             self.game_object.position.y as i32 - 60,
             128,
             128,
         );
-        let _ = rend.fill_rect(inner_rect);
+        let rect = Rect::new(64 * (self.anim as i32 % 8), 0, 50, 100);
+        rend.copy(&self.texture, rect, inner_rect);
     }
 
     fn collision_enter(&mut self, _other: &GameObject) {}
     fn collision_stay(&mut self, _other: &GameObject) {}
     fn collision_exit(&mut self, _other: &GameObject) {}
 
-    fn get_game_object<'a>(&'a mut self) -> &mut GameObject {
+    fn get_game_object<'c>(&'c mut self) -> &mut GameObject {
         &mut self.game_object
     }
 }
