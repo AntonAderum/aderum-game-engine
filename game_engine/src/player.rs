@@ -112,7 +112,7 @@ impl<'a> GameObjectTrait for Player<'a> {
             128,
             128,
         );
-        let rect = Rect::new(64 * (self.anim as i32 % 8), 0, 50, 100);
+        let rect = Rect::new(64 * (self.anim as i32 % 8), 0, 64, 64);
         rend.copy(&self.texture, rect, inner_rect);
     }
 
