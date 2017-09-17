@@ -21,12 +21,12 @@ pub struct Physics2D {
     pub id: String,
 }
 
-enum CollisionTypesOfTypes{
+enum CollisionTypesOfTypes {
     BoxAndBox,
     BoxAndCircle,
     CircleAndCircle,
     CircleAndBox,
-    None
+    None,
 }
 
 impl Physics2D {
@@ -216,8 +216,7 @@ impl Physics2D {
                 } else {
                     closest.x = -x_extent
                 }
-            }
-            else {
+            } else {
                 if closest.y > 0.0 {
                     closest.y = y_extent
                 } else {
@@ -387,7 +386,7 @@ impl Physics2D {
         pos: &mut Pointf,
         other: &mut Physics2D,
         other_pos: &mut Pointf,
-        coll_info: &mut HashMap<String, CollInfoType>
+        coll_info: &mut HashMap<String, CollInfoType>,
     ) -> CollInfoType {
 
         let mut hit_info_detection_obj = self.check_collision(pos, other, other_pos);

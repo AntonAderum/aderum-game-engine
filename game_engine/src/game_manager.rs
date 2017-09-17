@@ -34,7 +34,7 @@ pub fn checko_collision<'a>(
                     &mut this_obj.position,
                     other_physics,
                     &mut other_obj.position,
-                    coll_info
+                    coll_info,
                 );
             }
         }

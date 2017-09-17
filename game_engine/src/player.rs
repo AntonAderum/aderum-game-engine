@@ -36,7 +36,10 @@ impl<'a> Player<'a> {
             velocity: Pointf { x: 0.0, y: 0.0 },
             collision_type: CollisionTypes::BoundingBox(
                 Pointf { x: 0.0, y: 0.0 },
-                Pointf { x: size.x/2.0, y: size.y/2.0 },
+                Pointf {
+                    x: size.x / 2.0,
+                    y: size.y / 2.0,
+                },
             ),
             material: Material {
                 bounciness: 1.0,
@@ -127,8 +130,8 @@ impl<'a> GameObjectTrait for Player<'a> {
         let x_size = self.game_object.size.x as i32;
         let y_size = self.game_object.size.y as i32;
         let dest_rect = Rect::new(
-            self.game_object.position.x as i32 - x_size/2,
-            self.game_object.position.y as i32 - y_size/2,
+            self.game_object.position.x as i32 - x_size / 2,
+            self.game_object.position.y as i32 - y_size / 2,
             x_size as u32,
             y_size as u32,
         );
