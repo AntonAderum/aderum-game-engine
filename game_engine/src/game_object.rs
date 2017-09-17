@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use game_engine::GameEngine::game_engine::ObjectUsingPhysics;
-use game_engine::GameEngine::game_engine::Pointf;
+use game_engine::GameEngine::game_engine::pointf::Pointf;
 use std::fmt;
 
 pub trait GameObjectTrait {

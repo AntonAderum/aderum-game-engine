@@ -7,7 +7,7 @@ use sdl2::keyboard::Keycode;
 use game_object::GameObjectTrait;
 use game_engine::GameEngine::game_engine::ObjectUsingPhysics;
 use game_engine::GameEngine::game_engine::CollInfoType;
-use game_engine::GameEngine::game_engine::Pointf;
+use game_engine::GameEngine::game_engine::pointf::Pointf;
 use floor::Floor;
 use player::Player;
 use background::Background;
@@ -34,8 +34,7 @@ pub fn checko_collision<'a>(
                     &mut this_obj.position,
                     other_physics,
                     &mut other_obj.position,
-                    coll_info,
-                    delta_time,
+                    coll_info
                 );
             }
         }

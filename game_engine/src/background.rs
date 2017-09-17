@@ -1,5 +1,5 @@
 use game_object::GameObject;
-use game_engine::GameEngine::game_engine::Pointf;
+use game_engine::GameEngine::game_engine::pointf::Pointf;
 use sdl2::video::Window;
 use sdl2::render::Canvas;
 use sdl2::pixels::Color;

@@ -1,14 +1,14 @@
 use game_object::GameObject;
 use sdl2::rect::Rect;
-use game_engine::GameEngine::game_engine::Pointf;
+use game_engine::GameEngine::game_engine::pointf::Pointf;
 use sdl2::video::Window;
 use sdl2::render::Canvas;
 use sdl2::pixels::Color;
 use game_object::GameObjectTrait;
-use game_engine::GameEngine::game_engine::Physics2D;
+use game_engine::GameEngine::game_engine::physics2d::Physics2D;
 use game_engine::GameEngine::game_engine::ObjectUsingPhysics;
-use game_engine::GameEngine::game_engine::Kinectic;
 use game_engine::GameEngine::game_engine::CollisionTypes;
+use game_engine::GameEngine::game_engine::Material;
 use sdl2::render::Texture as SdlTexture;
 extern crate sdl2;
 use std::path::Path;
@@ -27,13 +27,18 @@ impl<'a> Floor<'a> {
 
         let size = Pointf { x: 1.0, y: 1.0 };
         let physics = Physics2D {
-            mass: 1.0,
+            mass: 100.0,
             use_gravity: false,
-            is_kinectic: Kinectic::_Yes,
+            is_kinectic: true,
+            velocity: Pointf { x: 0.0, y: 0.0 },
             collision_type: CollisionTypes::BoundingBox(
-                Pointf { x: 64.0, y: 64.0 },
+                Pointf { x: 0.0, y: 0.0 },
                 Pointf { x: 64.0, y: 64.0 },
             ),
+            material: Material {
+                bounciness: 0.1,
+                friction: 0.0,
+            },
             id: name,
         };
         let gam = GameObject {
@@ -77,12 +82,13 @@ impl<'a> GameObjectTrait for Floor<'a> {
         // let _ = rend.fill_rect(inner_rect);
 
         let inner_rect = Rect::new(
-            self.game_object.position.x as i32 - 60,
-            self.game_object.position.y as i32 - 60,
+            self.game_object.position.x as i32 - 64,
+            self.game_object.position.y as i32 - 64,
             128,
             128,
         );
         rend.copy(&self.texture, None, inner_rect);
+        rend.draw_rect(inner_rect);
     }
 
     fn collision_enter(&mut self, _other: &GameObject) {}
