@@ -106,7 +106,7 @@ impl<'a> GameObjectTrait for Player<'a> {
             if *o {
                 match self.game_object.object_using_physics {
                     ObjectUsingPhysics::Yes(ref mut phys) => {
-                        phys.add_side_force(0.03, 0.5);
+                        phys.add_side_force(20.0, 0.3, delta_time);
                     }
                     _ => (),
                 }
@@ -117,7 +117,7 @@ impl<'a> GameObjectTrait for Player<'a> {
             if *o {
                 match self.game_object.object_using_physics {
                     ObjectUsingPhysics::Yes(ref mut phys) => {
-                        phys.add_side_force(-0.03, 0.5);
+                        phys.add_side_force(-20.0, 0.3, delta_time);
                     }
                     _ => (),
                 }

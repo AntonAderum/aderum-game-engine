@@ -36,7 +36,7 @@ impl<'a> Floor<'a> {
                 Pointf { x: 64.0, y: 64.0 },
             ),
             material: Material {
-                bounciness: 0.1,
+                bounciness: 0.25,
                 friction: 0.0,
             },
             id: name,

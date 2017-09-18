@@ -35,8 +35,8 @@ impl Physics2D {
             self.velocity.y += 9.82 * delta_time;
             pos.y += self.velocity.y;
             let b = self.velocity.x < 0.0;
-            if self.velocity.x.abs() > 200.0 * delta_time {
-                let newv = self.velocity.x.abs() - 200.0 * delta_time;
+            if self.velocity.x.abs() > 5.0 * delta_time {
+                let newv = self.velocity.x.abs() - 5.0 * delta_time;
                 if b {
                     self.velocity.x = -newv;
                 } else {
@@ -56,11 +56,11 @@ impl Physics2D {
         }
     }
 
-    pub fn add_side_force(&mut self, force: f64, max_force: f64) {
+    pub fn add_side_force(&mut self, force: f64, max_force: f64, delta_time: &f64) {
 
         if !self.is_kinectic {
             if self.velocity.x.abs() < max_force {
-                self.velocity.x += force;
+                self.velocity.x += force * delta_time;
             }
         }
     }
