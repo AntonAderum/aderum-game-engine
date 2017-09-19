@@ -13,6 +13,8 @@ use sdl2::pixels::Color;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use std::collections::HashMap;
+use game_engine::GameEngine::game_engine::pointf::Pointf;
+use game_engine::GameEngine::game_engine::camera::Camera;
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
 
@@ -30,7 +32,8 @@ pub fn main() {
     canvas.set_draw_color(Color::RGB(255, 0, 0));
     canvas.clear();
     canvas.present();
-    let mut game_manager_obj = game_manager::GameManager::new(&texture_creator);
+    let mut camera = Camera::new(0.0, 0.0, &mut canvas);
+    let mut game_manager_obj = game_manager::GameManager::new(&texture_creator, &mut camera);
     game_manager_obj.init();
     let mut event_pump = sdl_context.event_pump().unwrap();
     let mut keyboard_state: HashMap<Keycode, bool> = HashMap::new();
@@ -45,7 +48,7 @@ pub fn main() {
         }
 
         game_manager_obj.update(&del, &keyboard_state, &mut coll_info);
-        game_manager_obj.draw(&mut canvas);
+        game_manager_obj.draw();
 
         let new_time = std::time::Instant::now();
         let nanoseconds = (new_time - old_time).subsec_nanos();

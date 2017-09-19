@@ -12,6 +12,7 @@ use game_engine::GameEngine::game_engine::CollisionTypes;
 use game_engine::GameEngine::game_engine::physics2d::Physics2D;
 use game_engine::GameEngine::game_engine::Material;
 use sdl2::render::Texture as SdlTexture;
+use game_engine::GameEngine::game_engine::camera::Camera;
 extern crate sdl2;
 use std;
 use std::path::Path;
@@ -125,19 +126,22 @@ impl<'a> GameObjectTrait for Player<'a> {
             }
         }
     }
-    fn draw(&self, rend: &mut Canvas<Window>) {
+    fn draw(&self, camera: &mut Camera) {
 
         let x_size = self.game_object.size.x as i32;
         let y_size = self.game_object.size.y as i32;
-        let dest_rect = Rect::new(
+        let mut dest_rect = Rect::new(
             self.game_object.position.x as i32 - x_size / 2,
             self.game_object.position.y as i32 - y_size / 2,
             x_size as u32,
             y_size as u32,
         );
         let src_rect = Rect::new(64 * (self.anim as i32 % 8) + 15, 30, 35, 34);
-        rend.copy(&self.texture, src_rect, dest_rect);
-        rend.draw_rect(dest_rect);
+        camera.DrawRec(&mut dest_rect);
+        camera.DrawPartOfTexture(&self.texture, src_rect, &mut dest_rect);
+        //_camera.DrawRec(dest_rect);
+        // rend.copy(&self.texture, src_rect, dest_rect);
+        // rend.draw_rect(dest_rect);
     }
 
     fn collision_enter(&mut self, _other: &GameObject) {}

@@ -10,6 +10,7 @@ use game_engine::GameEngine::game_engine::ObjectUsingPhysics;
 use game_engine::GameEngine::game_engine::CollisionTypes;
 use game_engine::GameEngine::game_engine::Material;
 use sdl2::render::Texture as SdlTexture;
+use game_engine::GameEngine::game_engine::camera::Camera;
 extern crate sdl2;
 use std::path::Path;
 
@@ -62,33 +63,16 @@ impl<'a> Floor<'a> {
 }
 
 impl<'a> GameObjectTrait for Floor<'a> {
-    fn draw(&self, rend: &mut Canvas<Window>) {
-        // // Create centered Rect, draw the outline of the Rect in our dark blue color.
-        // let border_rect = Rect::new(
-        //     self.game_object.position.x as i32 - 64,
-        //     self.game_object.position.y as i32 - 64,
-        //     128,
-        //     128,
-        // );
-        // let _ = rend.draw_rect(border_rect);
+    fn draw(&self, _camera: &mut Camera) {
 
-        // // Create a smaller centered Rect, filling it in the same dark blue.
-        // let inner_rect = Rect::new(
-        //     self.game_object.position.x as i32 - 60,
-        //     self.game_object.position.y as i32 - 60,
-        //     128,
-        //     128,
-        // );
-        // let _ = rend.fill_rect(inner_rect);
-
-        let inner_rect = Rect::new(
+        let mut inner_rect = Rect::new(
             self.game_object.position.x as i32 - 64,
             self.game_object.position.y as i32 - 64,
             128,
             128,
         );
-        rend.copy(&self.texture, None, inner_rect);
-        rend.draw_rect(inner_rect);
+        _camera.DrawFullTexture(&self.texture, &mut inner_rect);
+        _camera.DrawRec(&mut inner_rect);
     }
 
     fn collision_enter(&mut self, _other: &GameObject) {}

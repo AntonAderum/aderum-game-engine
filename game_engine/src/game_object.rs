@@ -7,11 +7,12 @@ use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use game_engine::GameEngine::game_engine::ObjectUsingPhysics;
 use game_engine::GameEngine::game_engine::pointf::Pointf;
+use game_engine::GameEngine::game_engine::camera::Camera;
 use std::fmt;
 
 pub trait GameObjectTrait {
     fn update(&mut self, _delta_time: &f64, _keyboard_input: &HashMap<Keycode, bool>) {}
-    fn draw(&self, _rend: &mut Canvas<Window>) {}
+    fn draw(&self, _camera: &mut Camera) {}
 
     fn collision_enter(&mut self, _other: &GameObject) {}
     fn collision_stay(&mut self, _other: &GameObject) {}
@@ -36,6 +37,12 @@ pub struct GameObject {
     pub object_using_physics: ObjectUsingPhysics,
     pub canjump: bool,
     pub color: Color,
+}
+
+impl GameObject {
+    pub fn get_position(&mut self) -> &Pointf {
+        &self.position
+    }
 }
 
 
