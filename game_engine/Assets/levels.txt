@@ -1,0 +1,41 @@
+# this is a comment
+[level]
+name: test
+order: 0
+[objects]
+[player]
+id: player
+pos_x: 320.0
+pos_y: 240.0
+[/player]
+[floor]
+id: floor_1
+pos_x: 320.0
+pos_y: 550.0
+[/floor]
+[floor]
+id: floor_2
+pos_x: 600.0
+pos_y: 480.0
+[/floor]
+[/level]
+[level]
+name: test_2
+order: 1
+[objects]
+[player]
+id: player
+pos_x: 420.0
+pos_y: 240.0
+[/player]
+[floor]
+id: floor_1
+pos_x: 420.0
+pos_y: 550.0
+[/floor]
+[floor]
+id: floor_2
+pos_x: 600.0
+pos_y: 480.0
+[/floor]
+[/level]

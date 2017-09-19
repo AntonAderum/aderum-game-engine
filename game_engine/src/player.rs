@@ -23,11 +23,12 @@ pub struct Player<'a> {
 }
 impl<'a> Player<'a> {
     pub fn new(
+        pos: Pointf,
         name: String,
-        texture_creator: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+        texture_creator: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>
     ) -> Player<'a> {
 
-        let pos = Pointf { x: 320.0, y: 240.0 };
+        //let pos = Pointf { x: 320.0, y: 240.0 };
         let size = Pointf { x: 1.0, y: 1.0 };
         let physics = Physics2D {
             mass: 1.0,
