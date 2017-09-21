@@ -7,7 +7,8 @@ use sdl2::keyboard::Keycode;
 use game_object::GameObjectTrait;
 use game_engine::GameEngine::game_engine::ObjectUsingPhysics;
 use game_engine::GameEngine::game_engine::CollInfoType;
-use game_engine::GameEngine::game_engine::Pointf;
+use game_engine::GameEngine::game_engine::pointf::Pointf;
+use game_engine::GameEngine::game_engine::camera::Camera;
 use floor::Floor;
 use player::Player;
 use background::Background;
@@ -16,6 +17,7 @@ use sdl2;
 pub struct GameManager<'a> {
     obj_vec: Vec<Box<GameObjectTrait + 'a>>,
     texture_creator: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+    camera: &'a mut Camera<'a>,
 }
 pub fn checko_collision<'a>(
     this: &mut Box<GameObjectTrait + 'a>,
@@ -35,7 +37,6 @@ pub fn checko_collision<'a>(
                     other_physics,
                     &mut other_obj.position,
                     coll_info,
-                    delta_time,
                 );
             }
         }
@@ -71,32 +72,65 @@ pub fn send_collision_report<'a>(
 impl<'a> GameManager<'a> {
     pub fn new(
         texture_creator2: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+        camera: &'a mut Camera<'a>,
     ) -> GameManager<'a> {
         GameManager {
             obj_vec: Vec::new(),
             texture_creator: texture_creator2,
+            camera: camera,
         }
     }
     pub fn init(&mut self) {
         let background = Background::new(Pointf { x: 0.0, y: 0.0 }, &self.texture_creator);
-        let object = Player::new(String::from("player"), &self.texture_creator);
-        let object2 = Floor::new(
+        self.obj_vec.push(Box::new(background));
+        let player = Player::new(String::from("player"), &self.texture_creator);
+        self.obj_vec.push(Box::new(player));
+        let floor = Floor::new(
             Pointf { x: 320.0, y: 550.0 },
             String::from("floor1"),
             &self.texture_creator,
         );
-        let object3 = Floor::new(
+        self.obj_vec.push(Box::new(floor));
+        let floor = Floor::new(
             Pointf { x: 600.0, y: 480.0 },
             String::from("floor2"),
             &self.texture_creator,
         );
-        self.obj_vec.push(Box::new(background));
-        self.obj_vec.push(Box::new(object));
-        self.obj_vec.push(Box::new(object2));
-        self.obj_vec.push(Box::new(object3));
+        self.obj_vec.push(Box::new(floor));
+        let floor = Floor::new(
+            Pointf { x: 900.0, y: 480.0 },
+            String::from("floor2"),
+            &self.texture_creator,
+        );
+        self.obj_vec.push(Box::new(floor));
+
+        let floor = Floor::new(
+            Pointf {
+                x: 1100.0,
+                y: 480.0,
+            },
+            String::from("floor2"),
+            &self.texture_creator,
+        );
+        self.obj_vec.push(Box::new(floor));
+
+        let floor = Floor::new(
+            Pointf {
+                x: 1300.0,
+                y: 480.0,
+            },
+            String::from("floor2"),
+            &self.texture_creator,
+        );
+        self.obj_vec.push(Box::new(floor));
+
     }
 
-
+    fn focus_camera(&mut self) {
+        let obj = self.obj_vec[1].get_game_object();
+        let pos = obj.get_position();
+        self.camera.SetOffset(pos.x, pos.y);
+    }
     pub fn update(
         &mut self,
         delta_time: &f64,
@@ -111,6 +145,7 @@ impl<'a> GameManager<'a> {
                 physics.update(&mut obj.position, delta_time);
             }
         }
+        self.focus_camera();
 
         for x in 0..self.obj_vec.len() - 1 {
             let (fir, sec) = self.obj_vec.split_at_mut(x + 1);
@@ -122,21 +157,13 @@ impl<'a> GameManager<'a> {
 
     }
 
-    pub fn draw(&'a self, rend: &mut Canvas<Window>) {
-
-        // Set the drawing color to a light blue.
-        let _ = rend.set_draw_color(Color::RGB(101, 208, 246));
-
-        // Clear the buffer, using the light blue color set above.
-        let _ = rend.clear();
-
-        // Set the drawing color to a darker blue.
-        let _ = rend.set_draw_color(Color::RGB(0, 153, 204));
+    pub fn draw(&mut self) {
+        self.camera.Clear();
 
         for item in self.obj_vec.iter() {
-            item.draw(rend);
+            item.draw(self.camera);
         }
-
-        rend.present();
+        self.camera.Present();
+        //rend.present();
     }
 }
