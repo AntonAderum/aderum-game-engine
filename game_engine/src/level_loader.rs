@@ -5,7 +5,7 @@ use std::io::BufReader;
 use std::path::Path;
 use std::ops::Add;
 use game_object::GameObjectTrait;
-use game_engine::GameEngine::game_engine::Pointf;
+use game_engine::GameEngine::game_engine::pointf::Pointf;
 use floor::Floor;
 use player::Player;
 use background::Background;
