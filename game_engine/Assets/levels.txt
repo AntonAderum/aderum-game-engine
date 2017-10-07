@@ -2,29 +2,39 @@
 [level]
 name: test
 order: 0
-[objects]
+[background]
+[/background]
 [player]
-id: player
-pos_x: 320.0
+id: player_from_levels
+pos_x: 520.0
 pos_y: 240.0
 [/player]
 [floor]
 id: floor_1
-pos_x: 320.0
+pos_x: 520.0
 pos_y: 550.0
 [/floor]
 [floor]
 id: floor_2
 pos_x: 600.0
 pos_y: 480.0
+[/floor]
+[floor]
+id: floor_3
+pos_x: 420.0
+pos_y: 480.0
+[/floor]
+[floor]
+id: floor_4
+pos_x: 220.0
+pos_y: 600.0
 [/floor]
 [/level]
 [level]
 name: test_2
 order: 1
-[objects]
 [player]
-id: player
+id: player_from_levels_2
 pos_x: 420.0
 pos_y: 240.0
 [/player]
@@ -35,7 +45,7 @@ pos_y: 550.0
 [/floor]
 [floor]
 id: floor_2
-pos_x: 600.0
-pos_y: 480.0
+pos_x: 610.0
+pos_y: 490.0
 [/floor]
 [/level]
