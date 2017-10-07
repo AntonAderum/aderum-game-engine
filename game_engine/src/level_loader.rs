@@ -34,6 +34,35 @@ impl<'a> LevelLoader<'a> {
     pub fn get_level_names(&self) -> Vec<String> {
         self.level_names.clone().into_iter().map(|x| x.0).collect()
     }
+    fn get_string(&self, line: &String, key: &str) -> String {
+        let mut string = String::new();
+        string = string.add(&line[key.len()..]);
+        string
+    }
+    fn get_f64(&self, line: &String, key: &str) -> f64 {
+        let mut string = String::new();
+        string = string.add(&line[key.len()..]);
+        let _f64 = string.parse::<f64>().unwrap();
+        _f64
+    }
+    fn read_player(&self, player: &mut (String, f64, f64), line: &String) {
+        if line.starts_with("id: ") {
+            player.0 = self.get_string(&line, "id: ");
+        } else if (line.starts_with("pos_x: ")) {
+            player.1 = self.get_f64(&line, "pos_x: ");
+        } else if (line.starts_with("pos_y: ")) {
+            player.2 = self.get_f64(&line, "pos_y: ");
+        }
+    }
+    fn read_floor(&self, floor: &mut (String, f64, f64), line: &String) {
+        if line.starts_with("id: ") {
+            floor.0 = self.get_string(&line, "id: ");
+        } else if (line.starts_with("pos_x: ")) {
+            floor.1 = self.get_f64(&line, "pos_x: ");
+        } else if (line.starts_with("pos_y: ")) {
+            floor.2 = self.get_f64(&line, "pos_y: ");
+        }
+    }
     pub fn get_game_objects_for_level(&self, level: &String) -> Vec<Box<GameObjectTrait + 'a>> {
         let lines = self.lines_from_file(Path::new("Assets/levels.txt"));
         let level_starts_at = self.level_names.clone().into_iter().find(|x| &x.0 == level).unwrap().1 as usize;
@@ -52,20 +81,7 @@ impl<'a> LevelLoader<'a> {
             while reading_level {
                 reading_player = self.is_reading_x(&lines[i], "[player]", "[/player]", reading_player);
                 while reading_player {
-                    if lines[i].starts_with("id: ") {
-                        let mut player_id = String::new();
-                        player_id = player_id.add(&lines[i][4..]);
-                        player.0 = player_id;
-                    }                                       
-                    else if (lines[i].starts_with("pos_x: ")) {
-                        let mut pos_x = String::new();
-                        pos_x = pos_x.add(&lines[i][7..]);
-                        player.1 = pos_x.parse::<f64>().unwrap();
-                    } else if (lines[i].starts_with("pos_y: ")) {
-                        let mut pos_y = String::new();
-                        pos_y = pos_y.add(&lines[i][7..]);
-                        player.2 = pos_y.parse::<f64>().unwrap();
-                    }
+                    self.read_player(&mut player, &lines[i]);
                     if i >= lines.len() {
                         reading_player = false;                        
                     } else {
@@ -80,22 +96,7 @@ impl<'a> LevelLoader<'a> {
                     if !read_floor {
                         read_floor = true;
                     }
-                    if lines[i].starts_with("id: ") {
-                        let mut floor_id = String::new();
-                        floor_id = floor_id.add(&lines[i][4..]);
-                        floor.0 = floor_id;
-                    }                                       
-                    else if (lines[i].starts_with("pos_x: ")) {
-                        let mut pos_x = String::new();
-                        pos_x = pos_x.add(&lines[i][7..]);
-                        println!("floor pos_x {}", pos_x);
-                        floor.1 = pos_x.parse::<f64>().unwrap();
-                    } else if (lines[i].starts_with("pos_y: ")) {
-                        let mut pos_y = String::new();
-                        pos_y = pos_y.add(&lines[i][7..]);
-                        println!("floor pos_y {}", pos_y);
-                        floor.2 = pos_y.parse::<f64>().unwrap();
-                    }
+                    self.read_floor(&mut floor, &lines[i]);
                     if i >= lines.len() {
                         reading_floor = false;                        
                     } else {
