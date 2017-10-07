@@ -6,27 +6,77 @@ order: 0
 [/background]
 [player]
 id: player_from_levels
-pos_x: 520.0
+pos_x: 125.0
 pos_y: 240.0
 [/player]
 [floor]
-id: floor_1
-pos_x: 520.0
+id: floor
+pos_x: 100.0
+pos_y: 600.0
+[/floor]
+[floor]
+id: floor
+pos_x: 225.0
+pos_y: 600.0
+[/floor]
+[floor]
+id: floor
+pos_x: 350.0
+pos_y: 600.0
+[/floor]
+[floor]
+id: floor
+pos_x: 475.0
+pos_y: 600.0
+[/floor]
+[floor]
+id: floor
+pos_x: 600.0
+pos_y: 600.0
+[/floor]
+[floor]
+id: floor
+pos_x: 725.0
+pos_y: 600.0
+[/floor]
+[floor]
+id: floor
+pos_x: 850.0
+pos_y: 600.0
+[/floor]
+[floor]
+id: floor
+pos_x: 975.0
+pos_y: 600.0
+[/floor]
+[floor]
+id: floor
+pos_x: 1100.0
+pos_y: 600.0
+[/floor]
+[floor]
+id: floor
+pos_x: 1225.0
+pos_y: 500.0
+[/floor]
+[floor]
+id: floor
+pos_x: 1350.0
+pos_y: 400.0
+[/floor]
+[floor]
+id: floor
+pos_x: 1575.0
 pos_y: 550.0
 [/floor]
 [floor]
-id: floor_2
-pos_x: 600.0
-pos_y: 480.0
+id: floor
+pos_x: 1700.0
+pos_y: 600.0
 [/floor]
 [floor]
-id: floor_3
-pos_x: 420.0
-pos_y: 480.0
-[/floor]
-[floor]
-id: floor_4
-pos_x: 220.0
+id: floor
+pos_x: 1825.0
 pos_y: 600.0
 [/floor]
 [/level]
