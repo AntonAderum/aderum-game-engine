@@ -8,6 +8,7 @@ mod game_object;
 mod background;
 mod floor;
 mod player;
+mod level_loader;
 
 use sdl2::pixels::Color;
 use sdl2::event::Event;

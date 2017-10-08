@@ -13,6 +13,7 @@ use floor::Floor;
 use player::Player;
 use background::Background;
 use sdl2;
+use level_loader::LevelLoader;
 
 pub struct GameManager<'a> {
     obj_vec: Vec<Box<GameObjectTrait + 'a>>,
@@ -81,49 +82,13 @@ impl<'a> GameManager<'a> {
         }
     }
     pub fn init(&mut self) {
-        let background = Background::new(Pointf { x: 0.0, y: 0.0 }, &self.texture_creator);
-        self.obj_vec.push(Box::new(background));
-        let player = Player::new(String::from("player"), &self.texture_creator);
-        self.obj_vec.push(Box::new(player));
-        let floor = Floor::new(
-            Pointf { x: 320.0, y: 550.0 },
-            String::from("floor1"),
-            &self.texture_creator,
-        );
-        self.obj_vec.push(Box::new(floor));
-        let floor = Floor::new(
-            Pointf { x: 600.0, y: 480.0 },
-            String::from("floor2"),
-            &self.texture_creator,
-        );
-        self.obj_vec.push(Box::new(floor));
-        let floor = Floor::new(
-            Pointf { x: 900.0, y: 480.0 },
-            String::from("floor2"),
-            &self.texture_creator,
-        );
-        self.obj_vec.push(Box::new(floor));
-
-        let floor = Floor::new(
-            Pointf {
-                x: 1100.0,
-                y: 480.0,
-            },
-            String::from("floor2"),
-            &self.texture_creator,
-        );
-        self.obj_vec.push(Box::new(floor));
-
-        let floor = Floor::new(
-            Pointf {
-                x: 1300.0,
-                y: 480.0,
-            },
-            String::from("floor2"),
-            &self.texture_creator,
-        );
-        self.obj_vec.push(Box::new(floor));
-
+        let mut ll = LevelLoader::new(self.texture_creator);
+        ll.load_level_names();
+        let level_names = ll.get_level_names();
+        let game_objects = ll.get_game_objects_for_level(&level_names[0]);
+        for game_object in game_objects {
+            self.obj_vec.push(game_object)
+        }
     }
 
     fn focus_camera(&mut self) {
