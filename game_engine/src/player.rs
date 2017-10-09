@@ -1,12 +1,10 @@
-use game_object::GameObject;
+use game_engine::GameEngine::game_engine::game_object::GameObject;
 use sdl2::rect::Rect;
 use game_engine::GameEngine::game_engine::pointf::Pointf;
-use sdl2::video::Window;
-use sdl2::render::Canvas;
 use std::collections::HashMap;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
-use game_object::GameObjectTrait;
+use game_engine::GameEngine::game_engine::game_object_trait::GameObjectTrait;
 use game_engine::GameEngine::game_engine::ObjectUsingPhysics;
 use game_engine::GameEngine::game_engine::CollisionTypes;
 use game_engine::GameEngine::game_engine::physics2d::Physics2D;
@@ -48,15 +46,15 @@ impl<'a> Player<'a> {
             },
             id: name,
         };
-        let gam = GameObject {
-            position: pos,
-            rotation: 0.0,
-            size: size,
-            speed: 2550.0,
-            object_using_physics: ObjectUsingPhysics::Yes(physics),
-            canjump: true,
-            color: Color::RGB(200, 153, 204),
-        };
+        let gam = GameObject::new(
+            pos,
+            size,
+            0.0,
+            2550.0,
+            ObjectUsingPhysics::Yes(physics),
+            true,
+            Color::RGB(200, 153, 204),
+        );
 
         let temp_surface = sdl2::surface::Surface::load_bmp(Path::new("Assets/viking.bmp")).unwrap();
         Player {
@@ -111,7 +109,6 @@ impl<'a> GameObjectTrait for Player<'a> {
                     }
                     _ => (),
                 }
-                //self.game_object.position.x += self.game_object.speed * delta_time;
             }
         }
         if let Some(o) = keyboard_input.get(&Keycode::A) {
@@ -122,7 +119,6 @@ impl<'a> GameObjectTrait for Player<'a> {
                     }
                     _ => (),
                 }
-                //self.game_object.position.x -= self.game_object.speed * delta_time;
             }
         }
     }
@@ -139,9 +135,6 @@ impl<'a> GameObjectTrait for Player<'a> {
         let src_rect = Rect::new(64 * (self.anim as i32 % 8) + 15, 30, 35, 34);
         camera.DrawRec(&mut dest_rect);
         camera.DrawPartOfTexture(&self.texture, src_rect, &mut dest_rect);
-        //_camera.DrawRec(dest_rect);
-        // rend.copy(&self.texture, src_rect, dest_rect);
-        // rend.draw_rect(dest_rect);
     }
 
     fn collision_enter(&mut self, _other: &GameObject) {}
@@ -152,4 +145,3 @@ impl<'a> GameObjectTrait for Player<'a> {
         &mut self.game_object
     }
 }
-

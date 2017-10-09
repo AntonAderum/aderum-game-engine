@@ -1,9 +1,7 @@
-use game_object::GameObject;
+use game_engine::GameEngine::game_engine::game_object::GameObject;
 use game_engine::GameEngine::game_engine::pointf::Pointf;
-use sdl2::video::Window;
-use sdl2::render::Canvas;
 use sdl2::pixels::Color;
-use game_object::GameObjectTrait;
+use game_engine::GameEngine::game_engine::game_object_trait::GameObjectTrait;
 use game_engine::GameEngine::game_engine::ObjectUsingPhysics;
 use sdl2::render::Texture as SdlTexture;
 use game_engine::GameEngine::game_engine::camera::Camera;
@@ -22,15 +20,17 @@ impl<'a> Background<'a> {
     ) -> Background<'a> {
 
         let size = Pointf { x: 1.0, y: 1.0 };
-        let gam = GameObject {
-            position: pos,
-            rotation: 0.0,
-            size: size,
-            speed: 0.0,
-            object_using_physics: ObjectUsingPhysics::None,
-            canjump: false,
-            color: Color::RGB(0, 153, 0),
-        };
+
+        let gam = GameObject::new(
+            pos,
+            size,
+            0.0,
+            0.0,
+            ObjectUsingPhysics::None,
+            false,
+            Color::RGB(0, 153, 0),
+        );
+
         let temp_surface = sdl2::surface::Surface::load_bmp(Path::new("Assets/background.bmp"))
             .unwrap();
         let floor = Background {
@@ -46,7 +46,6 @@ impl<'a> Background<'a> {
 impl<'a> GameObjectTrait for Background<'a> {
     fn draw(&self, _camera: &mut Camera) {
         _camera.DrawBackground(&self.texture);
-        //rend.copy(&self.texture, None, None);
     }
 
     fn collision_enter(&mut self, _other: &GameObject) {}

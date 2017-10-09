@@ -4,7 +4,8 @@ use std::io::prelude::*;
 use std::io::BufReader;
 use std::path::Path;
 use std::ops::Add;
-use game_object::GameObjectTrait;
+use game_engine::GameEngine::game_engine::game_object_trait::GameObjectTrait;
+//use game_object::GameObjectTrait;
 use game_engine::GameEngine::game_engine::pointf::Pointf;
 use floor::Floor;
 use player::Player;
@@ -65,7 +66,12 @@ impl<'a> LevelLoader<'a> {
     }
     pub fn get_game_objects_for_level(&self, level: &String) -> Vec<Box<GameObjectTrait + 'a>> {
         let lines = self.lines_from_file(Path::new("Assets/levels.txt"));
-        let level_starts_at = self.level_names.clone().into_iter().find(|x| &x.0 == level).unwrap().1 as usize;
+        let level_starts_at = self.level_names
+            .clone()
+            .into_iter()
+            .find(|x| &x.0 == level)
+            .unwrap()
+            .1 as usize;
         let mut i = level_starts_at;
         let mut reading_level = true;
         let mut reading_player = false;
@@ -79,29 +85,32 @@ impl<'a> LevelLoader<'a> {
             }
             reading_level = self.is_reading_x(&lines[i], "[level]", "[/level]", reading_level);
             while reading_level {
-                reading_player = self.is_reading_x(&lines[i], "[player]", "[/player]", reading_player);
+                reading_player =
+                    self.is_reading_x(&lines[i], "[player]", "[/player]", reading_player);
                 while reading_player {
                     self.read_player(&mut player, &lines[i]);
                     if i >= lines.len() {
-                        reading_player = false;                        
+                        reading_player = false;
                     } else {
                         i += 1;
-                        reading_player = self.is_reading_x(&lines[i], "[player]", "[/player]", reading_player);
+                        reading_player =
+                            self.is_reading_x(&lines[i], "[player]", "[/player]", reading_player);
                     }
                 }
                 reading_floor = self.is_reading_x(&lines[i], "[floor]", "[/floor]", reading_floor);
                 let mut read_floor = false;
-                let mut floor = (String::new(), 0.0, 0.0); 
+                let mut floor = (String::new(), 0.0, 0.0);
                 while reading_floor {
                     if !read_floor {
                         read_floor = true;
                     }
                     self.read_floor(&mut floor, &lines[i]);
                     if i >= lines.len() {
-                        reading_floor = false;                        
+                        reading_floor = false;
                     } else {
                         i += 1;
-                        reading_floor = self.is_reading_x(&lines[i], "[floor]", "[/floor]", reading_floor);
+                        reading_floor =
+                            self.is_reading_x(&lines[i], "[floor]", "[/floor]", reading_floor);
                     }
                 }
                 if read_floor {
@@ -111,21 +120,31 @@ impl<'a> LevelLoader<'a> {
                     reading_level = false;
                 } else {
                     i += 1;
-                    reading_level = self.is_reading_x(&lines[i], "[level]", "[/level]", reading_level);
+                    reading_level =
+                        self.is_reading_x(&lines[i], "[level]", "[/level]", reading_level);
                 }
             }
             i = lines.len() + 1;
         }
         let mut vec: Vec<Box<GameObjectTrait>> = Vec::new();
-        vec.push(Box::new(Background::new(Pointf { x: 0.0, y: 0.0 }, &self.texture_creator)));
+        vec.push(Box::new(Background::new(
+            Pointf { x: 0.0, y: 0.0 },
+            &self.texture_creator,
+        )));
         vec.push(Box::new(Player::new(
-                Pointf { x: player.1, y: player.2 },
-                player.0,
-                &self.texture_creator)
-        ));
+            Pointf {
+                x: player.1,
+                y: player.2,
+            },
+            player.0,
+            &self.texture_creator,
+        )));
         for floor in floors {
             let floor_object = Floor::new(
-                Pointf { x: floor.1, y: floor.2 },
+                Pointf {
+                    x: floor.1,
+                    y: floor.2,
+                },
                 floor.0,
                 &self.texture_creator,
             );
@@ -133,11 +152,16 @@ impl<'a> LevelLoader<'a> {
         }
         vec
     }
-    fn is_reading_x(&self, line: &String, starts_with: &'static str, ends_with: &'static str, reading_x: bool) -> bool {
+    fn is_reading_x(
+        &self,
+        line: &String,
+        starts_with: &'static str,
+        ends_with: &'static str,
+        reading_x: bool,
+    ) -> bool {
         if line.starts_with(starts_with) {
             return true;
-        }
-        else if line.starts_with(ends_with) {
+        } else if line.starts_with(ends_with) {
             return false;
         }
         reading_x
@@ -168,13 +192,16 @@ impl<'a> LevelLoader<'a> {
                 if lines[i].starts_with("name: ") {
                     let mut string = String::new();
                     string.push_str(&lines[i][6..]);
-                    self.level_names.push((string, started_reading_level_at as i32));
+                    self.level_names.push(
+                        (string, started_reading_level_at as i32),
+                    );
                 }
                 if (i >= lines.len()) {
                     reading_level = false;
                 } else {
                     i += 1;
-                    reading_level = self.is_reading_x(&lines[i], "[level]", "[/level]", reading_level);
+                    reading_level =
+                        self.is_reading_x(&lines[i], "[level]", "[/level]", reading_level);
                 }
             }
             i += 1;
