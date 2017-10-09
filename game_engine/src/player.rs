@@ -56,7 +56,7 @@ impl<'a> Player<'a> {
             Color::RGB(200, 153, 204),
         );
 
-        let temp_surface = sdl2::surface::Surface::load_bmp(Path::new("Assets/hero.bmp")).unwrap();
+        let temp_surface = sdl2::surface::Surface::load_bmp(Path::new("Assets/viking.bmp")).unwrap();
         Player {
             game_object: gam,
             texture: texture_creator
