@@ -1,10 +1,8 @@
-use game_object::GameObject;
+use game_engine::GameEngine::game_engine::game_object::GameObject;
 use sdl2::rect::Rect;
 use game_engine::GameEngine::game_engine::pointf::Pointf;
-use sdl2::video::Window;
-use sdl2::render::Canvas;
 use sdl2::pixels::Color;
-use game_object::GameObjectTrait;
+use game_engine::GameEngine::game_engine::game_object_trait::GameObjectTrait;
 use game_engine::GameEngine::game_engine::physics2d::Physics2D;
 use game_engine::GameEngine::game_engine::ObjectUsingPhysics;
 use game_engine::GameEngine::game_engine::CollisionTypes;
@@ -42,15 +40,16 @@ impl<'a> Floor<'a> {
             },
             id: name,
         };
-        let gam = GameObject {
-            position: pos,
-            rotation: 0.0,
-            size: size,
-            speed: 0.0,
-            object_using_physics: ObjectUsingPhysics::Yes(physics),
-            canjump: true,
-            color: Color::RGB(0, 153, 0),
-        };
+        let gam = GameObject::new(
+            pos,
+            size,
+            0.0,
+            0.0,
+            ObjectUsingPhysics::Yes(physics),
+            false,
+            Color::RGB(0, 153, 0),
+        );
+
         let temp_surface = sdl2::surface::Surface::load_bmp(Path::new("Assets/floor.bmp")).unwrap();
         let floor = Floor {
             game_object: gam,
@@ -78,9 +77,8 @@ impl<'a> GameObjectTrait for Floor<'a> {
     fn collision_enter(&mut self, _other: &GameObject) {}
     fn collision_stay(&mut self, _other: &GameObject) {}
     fn collision_exit(&mut self, _other: &GameObject) {}
-    // fn GetObjectUsingPhysics(&mut self) -> ObjectUsingPhysics{
-    //     self.game_object.object_using_physics
-    // }
+
+
     fn get_game_object<'c>(&'c mut self) -> &mut GameObject {
         &mut self.game_object
     }
