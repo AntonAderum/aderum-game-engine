@@ -14,10 +14,11 @@ use game_engine::GameEngine::game_engine::camera::Camera;
 extern crate sdl2;
 use std;
 use std::path::Path;
+
 //#[derive(Debug)]
 pub struct Player<'a> {
     pub game_object: GameObject,
-    pub texture: SdlTexture<'a>,
+    pub textures: HashMap<&'a str, SdlTexture<'a>>,
     anim: f64,
 }
 impl<'a> Player<'a> {
@@ -56,12 +57,18 @@ impl<'a> Player<'a> {
             Color::RGB(200, 153, 204),
         );
 
-        let temp_surface = sdl2::surface::Surface::load_bmp(Path::new("Assets/viking.bmp")).unwrap();
+        let idle = sdl2::surface::Surface::load_bmp(Path::new("Assets/viking.bmp")).unwrap();
+        let running = sdl2::surface::Surface::load_bmp(Path::new("Assets/viking_running.bmp")).unwrap();
+        let mut textures = HashMap::new();
+        textures.insert("idle", texture_creator
+                .create_texture_from_surface(&idle)
+                .unwrap());
+        textures.insert("running", texture_creator
+                .create_texture_from_surface(&running)
+                .unwrap());
         Player {
             game_object: gam,
-            texture: texture_creator
-                .create_texture_from_surface(&temp_surface)
-                .unwrap(),
+            textures: textures,
             anim: 0.0,
         }
     }
@@ -133,8 +140,21 @@ impl<'a> GameObjectTrait for Player<'a> {
             y_size as u32,
         );
         let src_rect = Rect::new(64 * (self.anim as i32 % 8) + 15, 30, 35, 34);
+        let mut has_x_velocity = false;
+        match self.game_object.object_using_physics {
+            ObjectUsingPhysics::Yes(ref phys) => {
+                if phys.velocity.x != 0.0 {
+                    has_x_velocity = true;
+                }
+            }
+            _ => (),
+        }
+        let mut texture: &SdlTexture = &self.textures["idle"];
+        if has_x_velocity {
+            texture = &self.textures["running"];
+        }
         camera.DrawRec(&mut dest_rect);
-        camera.DrawPartOfTexture(&self.texture, src_rect, &mut dest_rect);
+        camera.DrawPartOfTexture(&texture, src_rect, &mut dest_rect);
     }
 
     fn collision_enter(&mut self, _other: &GameObject) {}
